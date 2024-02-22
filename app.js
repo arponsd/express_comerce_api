@@ -4,42 +4,33 @@ const port = 3000;
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const productsRouter = require('./routers/product');
+const categoryRouter = require('./routers/category');
+require('dotenv/config');
+const api = process.env.API_URL;
+
 
 
 //middleware
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
 
-require('dotenv/config');
-const api = process.env.API_URL;
-
-
+//Routers
+app.use(`${api}/products`, productsRouter);
+app.use(`${api}/category`, categoryRouter);
 app.get('/', (req, res) => {
     res.send('Hello, world!');
 })
 
-app.get(`${api}/products`, (req, res) => {
-    const product = {
-        id: 1,
-        name: 'Hair Dresser',
-        image:'some_url'
-    }
-    res.send(product);
-;});
 
-app.post(`${api}/products`, (req, res) => {
-    const product = req.body;
-    res.send(product);
-;})
 
 mongoose.connect(process.env.CONNECTION_STRING)
 .then(() => {
-    console.log('Database Connection is Ready')
+    app.listen(port, () => {
+        console.log(`listening on ${port}`);
+    });
+    console.log("Mongo database connection done");
 })
 .catch((err) => {
-    console.log(err);
-})
-
-app.listen(port, () => {
-    console.log(`listening on ${port}`);
+    console.log('Error connecting', err);
 })

@@ -1,6 +1,7 @@
 const express = require('express');
 const Category = require('../models/category');
 const router = express.Router();
+const mongoose = require('mongoose');
 
 
 router.get('/', async (req, res) => {
@@ -50,5 +51,43 @@ router.delete('/:id', async (req, res) => {
         res.status(400).json({message: err.message, success: false});
     });
 })
+
+router.get('/:id', async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.id);
+        if (!category) {
+            res.status(404).json({message: 'Category not found'});
+        } else {
+            res.status(200).json(category);
+        }
+    }
+    catch(err) {
+        res.status(500).json({message: err.message, success: false});
+    }
+});
+
+router.put('/:id',async (req, res) => {
+    try {
+        const category = await Category.findByIdAndUpdate(
+            req.params.id,
+            {
+                name: req.body.name,
+                icon: req.body.icon,
+                color: req.body.color
+            },
+            {new: true}
+        )
+    
+        if(!category) {
+            res.status(404).send('The category cannot be created');
+        } else {
+            res.status(200).json(category);
+        }
+    }
+    catch(err) {
+        res.status(500).json({message: err.message, success: false});
+    }
+})
+
 
 module.exports = router;

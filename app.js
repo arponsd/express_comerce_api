@@ -15,7 +15,7 @@ const authJwt = require('./helpers/jwt');
 //middleware
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
-app.use(authJwt);
+// app.use(authJwt);
 //Routers
 app.use(`${api}/products`, productsRouter);
 app.use(`${api}/category`, categoryRouter);

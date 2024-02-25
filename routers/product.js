@@ -1,11 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const Product = require('../models/product');
+const {Product, productSchema} = require('../models/product');
 const Category = require('../models/category');
 
 router.get(`/`, async (req, res) => {
     try {
-        const product = await Product.find().select('name image price category').populate('category');
+        let filter = {};
+        if(req.query.categories) {
+            filter = {categories :req.query.categories.split(',')};
+        }
+        const product = await Product.find(filter).populate('category');
+        console.log(filter);
 
         if(!product) {
             res.status(404).json({message: 'No product found'});

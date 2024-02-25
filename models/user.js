@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
-    id: String,
     name: {
         type: String,
         required: true
@@ -16,23 +15,23 @@ const userSchema = mongoose.Schema({
     },
     street: {
         type: String,
-        required: true
+        default: ''
     },
     apartment: {
         type: String,
-        required: true
+        default: ''
     },
     city: {
         type: String,
-        required: true
+        default: ''
     },
     zip: {
         type: String,
-        required: true
+        default: ''
     },
     country: {
         type: String,
-        required: true
+        default: ''
     },
     phone: {
         type: Number,
@@ -40,10 +39,12 @@ const userSchema = mongoose.Schema({
     },
     isAdmin:  {
         type: Boolean,
-        required: true
+        required: false
     }
 });
 
+//   
+
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+module.exports = {User, userSchema};

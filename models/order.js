@@ -3,8 +3,11 @@ const OrderItems = require('orderItems');
 const User = require('User');
 
 const orderSchema = mongoose.Schema({
-    id: String,
-    orderItems: [OrderItems],
+    orderItems: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Orderitem',
+        required: true
+    }],
     shippingAddress1: {
         type: String,
         required: true
@@ -31,7 +34,8 @@ const orderSchema = mongoose.Schema({
     },
     status: {
         type: String,
-        required: true
+        required: false,
+        default: 'pending'
     },
     totalPrice: {
         type: String,
@@ -47,3 +51,15 @@ const orderSchema = mongoose.Schema({
     }
 
 })
+
+orderSchema.virtual('id').get(function() {
+    return this._id.toHexString()
+});
+
+orderSchema.set('toJSON', {
+    virtuals: true
+});
+
+const Order = mongoose.model('Order', orderSchema);
+
+module.exports = {Order, OrderSchema};

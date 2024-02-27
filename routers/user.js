@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/', async(req, res) => {
+router.post('/register', async(req, res) => {
     const user = new User({
         name: req.body.name,
         email: req.body.email,
@@ -65,16 +65,33 @@ router.post('/login', async (req, res) => {
         if(user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
             const token = jwt.sign(
                 {
-                    userId: user.id
+                    userId: user.id,
+                    isAdmin: user.isAdmin
                 },
-                secret
+                secret,
+                {expiresIn: '1d'}
             )
             res.status(200).send({user: user.email, token: token});
         } else {
             res.status(400).send('password is wrong');
         }
     }
-})
+});
+
+router.get('/get/count', async(req, res) => {
+    try{
+        const userCount = await User.countDocuments();
+    
+        if(!userCount) {
+            res.status(404).json({message: 'user not found', success: true});
+        } else {
+            res.status(200).json({count: userCount ,message: 'user count successful'})
+        }
+    }
+    catch(err){
+        res.status(500).json({message: err.message, success: false});
+    }
+});
 
 
 

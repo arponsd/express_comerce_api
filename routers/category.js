@@ -48,7 +48,7 @@ router.delete('/:id', async (req, res) => {
         }
     })
     .catch((err) => {
-        res.status(400).json({message: err.message, success: false});
+        res.status(500).json({message: err.message, success: false});
     });
 })
 

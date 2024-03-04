@@ -139,8 +139,20 @@ router.get('/get/usersorders/:userid', async(req, res) => {
         res.status(404).send('order not found');
     } 
     res.status(200).json({data: order, message: 'Order found'});
-})
+});
 
+
+router.get('/get/totalsales', async (req, res) => {
+    const totalSales = await Order.aggregate([
+        { $group: {_id: null, totalsales:{ $sum: '$totalPrice'}}}
+    ])
+
+    if(!totalSales) {
+        res.status(404).send('The order sales cannot be generated');
+    }
+
+    res.status(200).json({data: totalSales});
+})
 
 
 
